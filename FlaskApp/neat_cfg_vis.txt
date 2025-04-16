@@ -1,0 +1,87 @@
+[NEAT]
+fitness_criterion     = max
+fitness_threshold     = 0.99
+pop_size              = 200
+reset_on_extinction   = False
+
+[DefaultGenome]
+# Define the neural network structure
+num_inputs            = 4   
+num_outputs           = 2 
+num_hidden            = 0
+compatibility_disjoint_coefficient = 1.0
+compatibility_weight_coefficient = 0.5
+
+# Feedforward vs. Recurrent Network
+feed_forward          = True
+
+# Node activation options
+activation_default    = relu
+activation_mutate_rate= 0.1
+activation_options    = relu
+#, tanh, relu
+
+# Aggregation function options
+aggregation_default   = max
+aggregation_mutate_rate = 0.1
+aggregation_options   = max
+#, mean, max
+
+# Node bias
+bias_init_mean        = 0.0
+bias_init_stdev       = 1.0
+bias_max_value        = 30.0
+bias_min_value        = -30.0
+bias_mutate_rate      = 0.7
+bias_replace_rate     = 0.1
+bias_mutate_power     = 0.5
+
+# Connection weights
+weight_init_mean      = 0.0
+weight_init_stdev     = 0.5
+weight_max_value      = 30.0
+weight_min_value      = -30.0
+weight_mutate_rate    = 0.7
+weight_replace_rate   = 0.1
+weight_mutate_power   = 0.3
+
+# Response (connection) initialization
+response_init_mean    = 0.0
+response_init_stdev   = 1.0
+response_replace_rate = 0.1
+response_mutate_rate  = 0.8
+response_mutate_power = 0.5
+response_max_value    = 30.0
+response_min_value    = -30.0
+
+# Structural mutation rates
+node_add_prob         = 0.0
+node_delete_prob      = 0.005
+conn_add_prob         = 0.1
+conn_delete_prob      = 0.02
+
+# Node and connection enabled states
+enabled_default       = True
+enabled_mutate_rate   = 0.01
+
+[DefaultReproduction]
+elitism               = 2
+survival_threshold    = 0.3
+
+[DefaultSpeciesSet]
+compatibility_threshold = 3.0
+
+[DefaultStagnation]
+species_fitness_func  = max
+max_stagnation        = 10
+species_elitism       = 1
+
+[Speciation]
+compatibility_threshold = 2.5
+
+
+
+
+
+
+

@@ -1,0 +1,1 @@
+This is a placeholder for the actual Flask app. Real version will include app.py, templates/, etc.

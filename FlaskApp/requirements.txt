@@ -1,0 +1,14 @@
+Flask
+torch
+librosa
+soundfile
+scipy
+matplotlib
+pandas
+neat-python
+numpy
+pickle
+praat-parselmouth
+pydub
+ffmpeg
+uuid
