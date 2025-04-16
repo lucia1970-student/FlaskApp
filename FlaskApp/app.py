@@ -142,41 +142,6 @@ def index():
 
     return render_template("index.html")
 
-@app.route("/backup", methods=["GET", "POST"])
-def backup():
-    if request.method == "POST":
-        file = request.files.get("audio")
-        if file and file.filename.endswith(".wav"):
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-            file.save(file_path)
-            features = extract_features(file_path)
-            input_tensor = torch.tensor([features], dtype=torch.float32)
-            with torch.no_grad():
-                output = neat_model(input_tensor)
-                pred_class = torch.argmax(output, dim=1).item()
-                confidence = torch.softmax(output, dim=1).squeeze().tolist()
-                prediction = "Autistic" if pred_class == 1 else "Non-Autistic"
-
-                # Save results
-                result_id = str(uuid.uuid4())[:8]
-                result_file = os.path.join(app.config['RESULT_FOLDER'], f"report_{result_id}.csv")
-                df = pd.DataFrame({
-                    "Feature": ["avg_F1", "Jitter", "Shimmer", "HNR"],
-                    "Value": features
-                })
-                df["Prediction"] = prediction
-                df["Confidence_NonAutistic"] = confidence[0]
-                df["Confidence_Autistic"] = confidence[1]
-                df.to_csv(result_file, index=False)
-
-                mfcc_means = extract_mfcc_features(file_path)
-                return render_template("results.html", prediction=prediction, confidence=confidence,
-                                       features=zip(["avg_F1", "jitter_s", "shimmer", "HNR"], features),
-                                       mfccs=mfcc_means, result_file=f"report_{result_id}.csv")
-        else:
-            return render_template("index.html", error="Please upload a valid .wav file.")
-    return render_template("index.html")
-
 @app.route("/download/<filename>")
 def download(filename):
     return send_file(os.path.join(app.config['RESULT_FOLDER'], filename), as_attachment=True)
