@@ -1,1 +1,15 @@
-This is a placeholder for the actual Flask app. Real version will include app.py, templates/, etc.
+Pour lancer l'application flask localement:
+
+python3 ./app.py -r requirements.txt
+
+NOTER: Les dépendances incluses dans le fichier requirements.txt devront être rencontrés.
+
+1.  Les models sérialiser avec pickle sont inclus dans ../models et leurs implémentations propres sont incluses dans l'autre répertoire 'projet-finale'
+
+2.  Le répertoire 'static' est conçu pour inclure les images, le javascript, le cascading style sheets, etc.
+
+3.  Les fichiers dynamiques flask (html templates) sont contenus dans le répertoire ../templates.
+
+4.  L'implémentation python des scripts praat ainsi que la pré validation et la conversion des fichiers .wav en format consistant sont incluse dans le répertoire ../utils
+
+5.  Le fichier app.py est l'application 'main' de flask.
