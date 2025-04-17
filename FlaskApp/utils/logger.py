@@ -2,7 +2,9 @@ import csv
 import os
 from datetime import datetime
 
-def log_prediction_csv(subject_id, features, neat_pred, neat_conf, svc_pred, svc_conf, filepath='results/results_log.csv'):
+def log_prediction_csv(subject_id, features, neat_pred, neat_conf, svc_pred, svc_conf,
+                       clinical_neat_conf, clinical_svc_conf,
+                       filepath='results/results_log.csv'):
     # Ensure results folder exists
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
 
@@ -18,9 +20,11 @@ def log_prediction_csv(subject_id, features, neat_pred, neat_conf, svc_pred, svc
         'shimmer': features['shimmer'],
         'mean_HNR': features['mean_HNR'],
         'neat_pred': neat_pred,
-        'neat_conf': neat_conf,
+        'neat_conf': round(neat_conf, 4),
+        'clinical_neat_conf': clinical_neat_conf,
         'svc_pred': svc_pred,
-        'svc_conf': svc_conf,
+        'svc_conf': round(svc_conf, 4),
+        'clinical_svc_conf': clinical_svc_conf
     }
 
     file_exists = os.path.isfile(filepath)
