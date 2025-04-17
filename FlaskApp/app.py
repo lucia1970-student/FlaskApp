@@ -38,7 +38,6 @@ with open('models/scaler.pkl', 'rb') as f:
 # Load cluster label map
 cluster_label_map = np.load('models/cluster_label_map.npy', allow_pickle=True)
 
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -113,11 +112,7 @@ def index():
         print("✅ SVC predict_proba:", svc_model.predict_proba(X_scaled))
         print("✅ NEAT confidences:", confidences)
 
-        #svc_conf = svc_model.predict_proba(X_scaled)[0][1]
-        #svc_conf = svc_model.predict_proba([X_input])[0][1]  # Class 1 confidence
-        #svc_pred = svc_model.predict([X_input])[0]
-
-        log_prediction_csv(subject_id, features, neat_pred, neat_conf, svc_pred, svc_conf)
+        log_prediction_csv(subject_id, features, neat_pred, neat_conf, svc_pred, svc_conf, clinical_neat_conf, clinical_svc_conf)
         display_features = zip(
           ["avg_F1", "jitter_s", "shimmer", "mean_HNR"],
             [
