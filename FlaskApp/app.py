@@ -112,6 +112,9 @@ def index():
         print("✅ SVC predict_proba:", svc_model.predict_proba(X_scaled))
         print("✅ NEAT confidences:", confidences)
 
+        clinical_neat_conf = interpret_clinical_confidence(neat_conf)
+        clinical_svc_conf = interpret_clinical_confidence(svc_conf)
+        
         log_prediction_csv(subject_id, features, neat_pred, neat_conf, svc_pred, svc_conf, clinical_neat_conf, clinical_svc_conf)
         display_features = zip(
           ["avg_F1", "jitter_s", "shimmer", "mean_HNR"],
@@ -121,8 +124,6 @@ def index():
               float(features["shimmer"]),
               float(features["mean_HNR"])
             ])
-        clinical_neat_conf = interpret_clinical_confidence(neat_conf)
-        clinical_svc_conf = interpret_clinical_confidence(svc_conf)
 
         return render_template("results.html",
             features=display_features,
