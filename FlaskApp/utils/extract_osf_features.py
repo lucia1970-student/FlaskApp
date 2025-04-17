@@ -29,6 +29,25 @@ def extract_osf_features(wav_path, gender=None):
         print("Pitch extraction failed:", e)
 
     try:
+      point_process = parselmouth.praat.call(snd, "To PointProcess (periodic, cc)", pitch_floor, pitch_ceiling)
+    
+      results["jitter_s"] = parselmouth.praat.call(
+        point_process, "Get jitter (local)", 0, 0, 0.0001, 0.02, 1.3)
+
+      results["jitter_local_absolute"] = parselmouth.praat.call(
+        point_process, "Get jitter (local, absolute)", 0, 0, 0.0001, 0.02, 1.3)
+
+      results["shimmer"] = parselmouth.praat.call(
+        [snd, point_process], "Get shimmer (local)", 0, 0, 0.0001, 0.02, 1.3, 1.6)
+
+      results["shimmer_local_dB"] = parselmouth.praat.call(
+        [snd, point_process], "Get shimmer (local_dB)", 0, 0, 0.0001, 0.02, 1.3, 1.6)
+
+    except Exception as e:
+      print("❌ Jitter/Shimmer extraction failed:", e)
+
+    ***
+    try:
         point_process = parselmouth.praat.call(snd, "To PointProcess (periodic, cc)", pitch_floor, pitch_ceiling)
         results["jitter_s"] = parselmouth.praat.call(
             point_process, "Get jitter (local)", 0, 0, 0.0001, 0.02, 1.3)
@@ -41,7 +60,7 @@ def extract_osf_features(wav_path, gender=None):
             [snd, point_process], "Get shimmer (local_dB)", 0, 0, 0.0001, 0.02, 1.3)
     except Exception as e:
         print("Jitter/Shimmer extraction failed:", e)
-
+    ***
     try:
         harmonicity = snd.to_harmonicity_cc()
         results["mean_HNR"] = parselmouth.praat.call(harmonicity, "Get mean", 0, 0)
