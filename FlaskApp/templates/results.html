@@ -46,13 +46,32 @@
 
 <div class="alert alert-info text-center fs-5">
   <strong>NEAT Prediction:</strong> {{ neat_label }}<br>
-  <strong>Model Confidence:</strong> {{ neat_conf_pct }}% ({{ neat_label }})<br>
+  <strong>Model Confidence:</strong> {{ neat_conf_pct }}% ({{ neat_label }})
+  <div class="progress mx-auto mt-1" style="height: 6px; width: 60%;">
+    <div class="progress-bar bg-info" role="progressbar"
+         style="width: {{ neat_conf_pct }}%;"
+         aria-valuenow="{{ neat_conf_pct }}" aria-valuemin="0" aria-valuemax="100"></div>
+  </div>
   <strong>Clinical Confidence:</strong> {{ clinical_neat_conf }}<br><br>
 
   <strong>SVC Prediction:</strong> {{ svc_label }}<br>
-  <strong>Model Confidence:</strong> {{ svc_conf_pct }}% ({{ svc_label }})<br>
+  <strong>Model Confidence:</strong> {{ svc_conf_pct }}% ({{ svc_label }})
+  <div class="progress mx-auto mt-1" style="height: 6px; width: 60%;">
+    <div class="progress-bar bg-secondary" role="progressbar"
+         style="width: {{ svc_conf_pct }}%;"
+         aria-valuenow="{{ svc_conf_pct }}" aria-valuemin="0" aria-valuemax="100"></div>
+  </div>
   <strong>Clinical Confidence:</strong> {{ clinical_svc_conf }}
+
+  <br><br>
+  <small class="text-muted fst-italic">
+    ℹ️ <span title="Model Confidence is the neural network or classifier's estimated probability.
+Clinical Confidence is a thresholded interpretation of that prediction.">
+    Model vs Clinical Confidence explained
+    </span>
+  </small>
 </div>
+
 
 
   <div class="card shadow-sm p-4 mb-4">
