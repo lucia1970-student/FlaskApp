@@ -126,6 +126,9 @@ def index():
               float(features["shimmer"]),
               float(features["mean_HNR"])
             ])
+        clinical_neat_conf = interpret_clinical_confidence(neat_conf)
+        clinical_svc_conf = interpret_clinical_confidence(svc_conf)
+
         return render_template("results.html",
             features=display_features,
             mfccs=mfcc_means,
@@ -137,6 +140,8 @@ def index():
             svc_conf=svc_conf,
             svc_label=svc_label,
             svc_conf_pct=svc_conf_pct,
+            clinical_neat_conf=clinical_neat_conf,
+            clinical_svc_conf=clinical_svc_conf,
             subject_id=subject_id,
             timestamp=timestamp)
 
@@ -145,6 +150,18 @@ def index():
 @app.route("/download/<filename>")
 def download(filename):
     return send_file(os.path.join(app.config['RESULT_FOLDER'], filename), as_attachment=True)
+
+def interpret_clinical_confidence(prob_autistic: float) -> str:
+    if prob_autistic < 0.1:
+        return "High confidence subject is Non-Autistic"
+    elif prob_autistic < 0.3:
+        return "Moderate confidence subject is Non-Autistic"
+    elif prob_autistic <= 0.7:
+        return "Uncertain — further assessment recommended"
+    elif prob_autistic <= 0.9:
+        return "Moderate confidence subject is Autistic"
+    else:
+        return "High confidence subject is Autistic"
 
 if __name__ == "__main__":
     app.run(debug=True)
