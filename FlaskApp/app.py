@@ -61,7 +61,7 @@ def index():
         if not fixed_path:
             return render_template("index.html", error="Audio format could not be processed.")
 
-        features = extract_osf_features(fixed_path, gender="female")
+        features = extract_osf_features(fixed_path, gender="male")
         print("Extracted features:", features)
         #print("Contains NaN?", np.isnan(features).any())
 
