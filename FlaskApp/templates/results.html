@@ -46,10 +46,14 @@
 
 <div class="alert alert-info text-center fs-5">
   <strong>NEAT Prediction:</strong> {{ neat_label }}<br>
-  <strong>Confidence:</strong> {{ neat_conf_pct }}%<br><br>
+  <strong>Model Confidence:</strong> {{ neat_conf_pct }}% (Autistic)<br>
+  <strong>Clinical Confidence:</strong> {{ clinical_neat_conf }}<br><br>
+
   <strong>SVC Prediction:</strong> {{ svc_label }}<br>
-  <strong>Confidence:</strong> {{ svc_conf_pct }}%
+  <strong>Model Confidence:</strong> {{ svc_conf_pct }}% (Autistic)<br>
+  <strong>Clinical Confidence:</strong> {{ clinical_svc_conf }}
 </div>
+
 
   <div class="card shadow-sm p-4 mb-4">
     <h5>Extracted Features</h5>
