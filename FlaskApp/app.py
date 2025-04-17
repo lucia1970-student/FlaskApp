@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, send_file, abort
 import os
 import neat
 import torch
@@ -145,7 +145,10 @@ def index():
 
 @app.route("/download/<filename>")
 def download(filename):
-    return send_file(os.path.join(app.config['RESULT_FOLDER'], filename), as_attachment=True)
+    path = os.path.join(app.config['RESULT_FOLDER'], filename)
+    if not os.path.exists(path):
+        abort(404)
+    return send_file(path, as_attachment=True)
 
 def interpret_clinical_confidence(prob_autistic: float) -> str:
     if prob_autistic < 0.1:
