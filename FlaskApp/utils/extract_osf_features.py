@@ -21,7 +21,8 @@ def extract_osf_features(wav_path, gender=None):
         # --- Pitch features ---
         pitch_floor = 75 if gender == "male" else 100
         pitch_ceiling = 300 if gender == "male" else 500
-        pitch = snd.to_pitch_ac(time_step=0.0, pitch_floor=pitch_floor, pitch_ceiling=pitch_ceiling)
+        time_step = 0.01  # 10ms = good balance of precision and performance
+        pitch = snd.to_pitch_ac(time_step=time_step, pitch_floor=pitch_floor, pitch_ceiling=pitch_ceiling)        
         results["mean_F0"] = parselmouth.praat.call(pitch, "Get mean", 0, 0, "Hertz")
         results["sd_F0"] = parselmouth.praat.call(pitch, "Get standard deviation", 0, 0, "Hertz")
     except Exception as e:
@@ -35,6 +36,7 @@ def extract_osf_features(wav_path, gender=None):
             point_process, "Get jitter (local, absolute)", 0, 0, 0.0001, 0.02, 1.3)
         results["shimmer"] = parselmouth.praat.call(
             [snd, point_process], "Get shimmer (local)", 0, 0, 0.0001, 0.02, 1.3, 1.6)
+
         results["shimmer_local_dB"] = parselmouth.praat.call(
             [snd, point_process], "Get shimmer (local_dB)", 0, 0, 0.0001, 0.02, 1.3)
     except Exception as e:
