@@ -87,7 +87,6 @@ def index():
             output = neat_model(X_tensor)
             print("✅ NEAT raw output:", output)
 
-            #neat_conf = torch.sigmoid(output).item()
             confidences = torch.softmax(output, dim=1).squeeze()
             neat_conf = confidences[1].item()  # confidence for 'Autistic'
             neat_pred = int(neat_conf > 0.5)
@@ -124,6 +123,33 @@ def index():
               float(features["shimmer"]),
               float(features["mean_HNR"])
             ])
+
+        # Unique result filename using subject_id and timestamp
+        result_id = str(uuid.uuid4())[:8]
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        result_filename = f"result_{subject_id}_{timestamp}_{result_id}.csv"
+
+        # Full file path (used for saving the CSV)
+        result_path = os.path.join(app.config['RESULT_FOLDER'], result_filename)
+
+        # Save individual CSV report
+        df = pd.DataFrame({
+          "Feature": ["avg_F1", "jitter_s", "shimmer", "mean_HNR"],
+          "Value": [
+            float(features["avg_F1"]),
+            float(features["jitter_s"]),
+            float(features["shimmer"]),
+            float(features["mean_HNR"])
+          ],
+          "NEAT_Prediction": neat_label,
+          "NEAT_Confidence (%)": neat_conf_pct,
+          "Clinical_NEAT_Confidence": clinical_neat_conf,
+          "SVC_Prediction": svc_label,
+          "SVC_Confidence (%)": svc_conf_pct,
+        "Clinical_SVC_Confidence": clinical_svc_conf
+        })
+
+        df.to_csv(result_path, index=False)  # ✅ Write results to CSV
 
         return render_template("results.html",
             features=display_features,
