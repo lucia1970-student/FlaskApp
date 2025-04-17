@@ -151,6 +151,8 @@ def index():
 
         df.to_csv(result_path, index=False)  # ✅ Write results to CSV
 
+        result_file=result_filename
+        
         return render_template("results.html",
             features=display_features,
             mfccs=mfcc_means,
@@ -165,7 +167,8 @@ def index():
             clinical_neat_conf=clinical_neat_conf,
             clinical_svc_conf=clinical_svc_conf,
             subject_id=subject_id,
-            timestamp=timestamp)
+            timestamp=timestamp,
+            result_file=result_filename)
 
     return render_template("index.html")
 
