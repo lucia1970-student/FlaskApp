@@ -33,8 +33,7 @@ with open('models/kmeans_model.joblib', 'rb') as f:
 
 with open('models/scaler.pkl', 'rb') as f:
     scaler = pickle.load(f)
-
-
+    
 # Load cluster label map
 cluster_label_map = np.load('models/cluster_label_map.npy', allow_pickle=True)
 
