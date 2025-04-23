@@ -12,3 +12,4 @@ praat-parselmouth
 pydub
 ffmpeg
 uuid
+joblib
