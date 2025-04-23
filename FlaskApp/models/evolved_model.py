@@ -1,10 +1,11 @@
-# NEAT model class and loader
+# models/evolved_model.py
+# Defines only the model and config setup. No file I/O.
+
 import neat
 import torch
 import torch.nn as nn
-import pickle
 
-# Load NEAT config
+# Load NEAT config (external path still allowed here)
 config_path = "neat_cfg_vis.txt"
 config = neat.Config(
     neat.DefaultGenome,
@@ -14,13 +15,6 @@ config = neat.Config(
     config_path
 )
 
-#Load models KMeans++ and SVC
-
-# Load the winner genome
-with open("evolved_neat_model.pkl", "rb") as f:
-    winner = pickle.load(f)
-
-# Define the evolved PyTorch model
 class EvolvedNN(nn.Module):
     def __init__(self, neat_net, genome):
         super().__init__()
@@ -29,13 +23,16 @@ class EvolvedNN(nn.Module):
         layer_index = 0
         neuron_index = 0
 
+        # Input layer mapping
         for node_id in neat_net.input_nodes:
             self.node_map[node_id] = (layer_index, neuron_index)
             neuron_index += 1
 
-        hidden_nodes = [n for n in genome.nodes if n not in neat_net.input_nodes and n not in neat_net.output_nodes]
+        hidden_nodes = [n for n in genome.nodes
+                        if n not in neat_net.input_nodes and n not in neat_net.output_nodes]
         num_hidden = len(hidden_nodes)
 
+        # Hidden layer (if exists)
         if num_hidden > 0:
             layer_index += 1
             neuron_index = 0
@@ -44,6 +41,7 @@ class EvolvedNN(nn.Module):
                 self.node_map[node_id] = (layer_index, neuron_index)
                 neuron_index += 1
 
+        # Output layer
         layer_index += 1
         neuron_index = 0
         input_size = num_hidden if num_hidden > 0 else len(neat_net.input_nodes)
