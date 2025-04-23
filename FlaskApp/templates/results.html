@@ -14,19 +14,18 @@
   </div>
 
   <div class="alert alert-info text-center fs-5">
+    <strong>Subject:</strong> {{ subject_id }}<br>
+    <strong>Age:</strong> {{ age }}<br>
+    <strong>Gender:</strong> {{ gender }}<br>
+    <strong>Analyzed on:</strong> {{ timestamp.replace('_', ' ') }}<br><br>
+
     <strong>NEAT Prediction:</strong> {{ neat_label }}<br>
-    <strong>Confidence:</strong> {{ neat_conf_str }}<br>
+    <strong>Model Confidence:</strong> {{ neat_conf_pct }}% ({{ neat_label }})<br>
     <strong>Clinical Confidence:</strong> {{ clinical_neat_conf }}<br><br>
 
     <strong>SVC Prediction:</strong> {{ svc_label }}<br>
-    <strong>Confidence:</strong> {{ svc_conf_str }}<br>
-    <strong>Clinical Confidence:</strong> {{ clinical_svc_conf }}<br>
-
-    {% if neat_label != svc_label %}
-      <div class="mt-3 alert alert-warning">
-        <strong>Note:</strong> The NEAT and SVC models disagree on this prediction.
-      </div>
-    {% endif %}
+    <strong>Model Confidence:</strong> {{ svc_conf_pct }}% ({{ svc_label }})<br>
+    <strong>Clinical Confidence:</strong> {{ clinical_svc_conf }}
   </div>
 
   <div class="card shadow-sm p-4 mb-4">
@@ -42,7 +41,7 @@
         {% for name, value in features %}
         <tr>
           <td>{{ name }}</td>
-          <td>{{ value | round(4) }}</td>
+          <td>{{ value|round(4) }}</td>
         </tr>
         {% endfor %}
       </tbody>
