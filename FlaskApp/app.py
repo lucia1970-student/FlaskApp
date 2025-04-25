@@ -8,10 +8,13 @@ import numpy as np
 from datetime import datetime
 from utils.extract_osf_features import extract_osf_features as extract_features
 from utils.extract_features import fix_wav_format, extract_mfcc_features
+from utils.logger import log_prediction_diagnostics_csv
+from utils.audio_quality import compute_snr, compute_peak_db
 from models.evolved_model import EvolvedNN, config
 from sklearn.preprocessing import StandardScaler
 import uuid
 import neat
+import math
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -109,6 +112,81 @@ def index():
 
         print(f"✅ SVC prob: {svc_prob}, SVC label: {svc_label}, SVC conf: {svc_conf_pct}%")
 
+      
+        try:
+            snr_db = compute_snr(fixed_path)
+        except Exception as e:
+            snr_db = None
+            print(f"❌ SNR computation failed: {e}")
+
+        peak_db = compute_peak_db(fixed_path)
+        if peak_db is not None and peak_db > -1:
+            print("✅ Peak amplitude OK")
+        else:
+            print(f"⚠️ Low peak amplitude: {peak_db:.2f} dBFS — consider amplification")
+
+        # Check if values are valid
+        snr_is_valid = snr_db is not None and not math.isnan(snr_db)
+        peak_is_valid = peak_db is not None and not math.isnan(peak_db)
+
+        # --- Console logging ---
+        if snr_is_valid:
+            if snr_db < 10:
+                print(f"⚠️ Low SNR detected: {snr_db:.2f} dB — signal may be noisy.")
+            else:
+                print(f"✅ SNR: {snr_db:.2f} dB")
+        else:
+            print("⚠️ SNR unavailable (NaN or missing)")
+
+        if peak_is_valid:
+            if peak_db < 80:
+                print(f"⚠️ Peak amplitude below 80 dB SPL: {peak_db:.2f} dB — may affect jitter/shimmer accuracy.")
+            else:
+                print(f"✅ Peak dB SPL: {peak_db:.2f} dB")
+        else:
+            print("⚠️ Peak dB SPL unavailable")
+
+        # --- Message construction ---
+        snr_msg = (
+            f"Low SNR: {snr_db:.2f} dB" if snr_is_valid and snr_db < 10 else
+            f"SNR OK: {snr_db:.2f} dB" if snr_is_valid else
+            "SNR unavailable"
+        )
+
+        peak_db_msg = (
+            f"Low Peak Amplitude: {peak_db:.2f} dB" if peak_is_valid and peak_db < 80 else
+            f"Peak dB OK: {peak_db:.2f} dB" if peak_is_valid else
+            "Peak dB unavailable"
+        )
+
+        # --- Final flag ---
+        voice_quality_flag = []
+        if not snr_is_valid or snr_db < 10:
+            voice_quality_flag.append("Low SNR")
+        if not peak_is_valid or peak_db < 60:
+            voice_quality_flag.append("Low Peak SPL")
+
+        voice_quality_flag = "; ".join(voice_quality_flag) if voice_quality_flag else "OK"
+
+
+        print(f"📊 Diagnostic logged for subject {subject_id}: Voice Quality = {voice_quality_flag}")
+
+        voice_quality_flag = log_prediction_diagnostics_csv(
+          subject_id=subject_id,
+          age=age,
+          gender=gender,
+          features=features,
+          neat_label=neat_label,
+          neat_conf_pct=neat_conf_pct,
+          svc_label=svc_label,
+          svc_conf_pct=svc_conf_pct,
+          snr_db=snr_db,
+          peak_db=peak_db,
+          snr_msg=snr_msg,
+          peak_db_msg=peak_db_msg,
+          voice_quality_flag=voice_quality_flag
+        )
+
 
         result_path = os.path.join(app.config['RESULT_FOLDER'], result_filename)
         with open(result_path, 'w', newline='') as f:
@@ -154,7 +232,10 @@ def index():
             age=age,
             gender=gender,
             timestamp=timestamp,
-            result_file=result_filename)
+            result_file=result_filename,
+            snr_msg=snr_msg,
+            peak_db_msg=peak_db_msg,
+            voice_quality_flag=voice_quality_flag)
 
     return render_template("index.html")
 
