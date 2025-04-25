@@ -1,7 +1,9 @@
 Cette application vous permetteras de déployer localement l'application flask vous permettant ainsi de télécharger un fichier .wav pour classifier le trouble du spectre autistique ainsi que visionner
 et sauvegarder les charactéristiques de voix extrait à partir du fichier .wav télécharger.   Cette dernière fonctionnalité est implémenter avec la librarie praat-parselmouth.
 
+Pour installer l'application flask localement:
 
+pip install -r requirements.txt
 
 Pour lancer l'application flask localement:
 
