@@ -28,6 +28,16 @@
     <strong>Clinical Confidence:</strong> {{ clinical_svc_conf }}
   </div>
 
+  {% if snr_msg or peak_db_msg %}
+    <div class="alert alert-warning">
+      <strong>Audio Diagnostics:</strong><br>
+      {% if snr_msg %}{{ snr_msg }}<br>{% endif %}
+      {% if peak_db_msg %}{{ peak_db_msg }}<br>{% endif %}
+      <em>Please consider re-recording or amplifying this sample if predictions appear inconsistent.</em>
+    </div>
+  {% endif %}
+
+
   <div class="card shadow-sm p-4 mb-4">
     <h5>Extracted Features</h5>
     <table class="table table-bordered table-sm mt-3">
