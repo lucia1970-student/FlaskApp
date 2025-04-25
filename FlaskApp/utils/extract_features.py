@@ -1,4 +1,28 @@
-# Feature extraction logic goes here
+"""
+extract_features.py
+
+Extracts fundamental acoustic and spectral features from WAV audio files for use in diagnostic and
+machine learning applications such as autism voice biomarker analysis.
+
+Functions:
+- extract_features(): Extracts avg_F1 (formant F1), jitter, shimmer, and mean HNR using Praat via Parselmouth.
+- extract_mfcc_features(): Computes MFCCs using librosa and returns the average values across time frames.
+- fix_wav_format(): Converts uploaded audio (e.g., MP3, stereo, variable bit rate) to 16-bit PCM mono WAV at 16kHz 
+  using pydub for consistent preprocessing.
+
+Typical use case: Called during Flask app inference pipeline to standardize and extract features from new voice recordings.
+
+Dependencies:
+- numpy
+- librosa
+- parselmouth
+- pydub
+- uuid
+- os
+- scipy.stats.variation (optional, if variation is used elsewhere)
+
+"""
+
 import librosa
 import parselmouth
 import numpy as np
